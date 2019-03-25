@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body bgcolor="black">
+		<input type="button" id="btn1" value="创建" />
+		<input type="button" id="btn2" value="删除" />
+
+	</body>
+</html>
+<script>
+
+		var timer = setInterval(createImg,1000);
+		var oImg;
+		function createImg(){
+			oImg = document.createElement("img")	
+			document.body.appendChild(oImg);
+			oImg.src = "img/star_y.png";
+			//设置图片的随机大小
+			var w = rand(5,30);
+			oImg.width = w ;
+			oImg.height = w ;
+			//改变图片的随机位置
+			oImg.style.position = "absolute";
+			//window.innerWidth   浏览器宽度
+			var _left = rand(0,window.innerWidth-w);
+			var _top = rand(0,window.innerHeight-w);
+			oImg.style.left = _left+"px";
+			oImg.style.top = _top+"px";
+			oImg.onclick = function(){
+				this.remove();
+			}
+		}
+
+	function rand(min,max){
+		return Math.round(Math.random()*(max-min))+min;
+	}
+	var btnCreate = document.getElementById("btn1");
+	var btnRemove = document.getElementById("btn2");
+	btnCreate.onclick = function(){
+		createImg();
+	}
+	btnRemove.onclick = function(){
+		// document.body.removeChild(oImg);
+		// oImg.remove();
+		oImgs = document.getElementsByTagName("img");
+		for( var i=oImgs.length-1;i>=0;i--){
+			oImgs[i].remove()
+		}
+	}
+
+
+
+
+
+
+
+</script>

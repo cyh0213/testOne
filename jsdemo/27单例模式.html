@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>单例模式</title>
+	</head>
+	<body>
+	</body>
+</html>
+<script type="text/javascript">
+	/*
+	function Student(){
+		
+	}
+	 var stu1 = new Student();
+	 var stu2 = new Student();
+	 alert( stu1 == stu2 );//结果是false   这是两个单独的实例
+	 
+	  */
+	 
+	 
+	 /*
+	  单例模式：永远保持对象的一个实例    即 ： 让alert( stu1 == stu2 )的结果是true
+	 字面量的创建方式 ： obj = {}；
+	 
+	 单例模式的实现思路：
+	 	在构造函数内容实现：
+		 	将第一次new出来的对象，存入到一个变量中，并返回该变量 
+		 	第二次new对象时，判断上面的变量中是否含有值  ，  如果有就直接返回
+	单例模式的好处： 可以实现变量的共享
+	  
+	 */
+	 
+	 //单例模式实现   instance---单例
+	 //var ins = null;
+	 function Student(){
+	 	//为了防止全局变量污染   将ins变成私有变量  作为属性存在
+	 	//在构造函数的内部，可以为构造函数本身添加自定义属性
+	 	if( Student.instance ){
+	 		return Student.instance;
+	 	}
+	 	Student.instance = this;
+	 	return Student.instance;
+	 	
+	 }
+	 
+	 var stu1 = new Student();
+	 var stu2 = new Student();
+	 alert( stu1 == stu2 );//true
+	 
+	 
+	 
+	 //第二种单例模式的实现
+	 function Teacher(){
+	 	//判断如果Teacher.instance不存在，就创建一个对象
+	 	if(!Teacher.instance){
+	 		Teacher.instance = {
+	 			name : "jack"
+	 		}
+	 	}
+	 	return Teacher.instance;
+	 }
+	 
+	 var t1 = new Teacher();
+	 var t2 = new Teacher();
+	 alert( t1 == t2 );
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+</script>

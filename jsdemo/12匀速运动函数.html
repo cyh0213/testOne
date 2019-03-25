@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			div{
+				width: 100px;
+				height: 100px;
+				background: skyblue;
+				position: absolute;
+				left: 200px;
+				top: 300px;
+				opacity: .3;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="button" name="" id="" value="向右走" />
+		<input type="button" name="" id="" value="向左走" />
+		<div id="box">
+			
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	var timer = null;
+	var btns = document.querySelectorAll("input");
+	var oDiv = document.querySelector("div");
+	btns[0].onclick = function(){
+		startMove(300)
+	}
+	btns[1].onclick = function(){
+		startMove(0)
+	}
+	//target是目标值 
+	function startMove(target){
+		clearInterval(timer);
+		timer = setInterval(function(){
+			var speed = target - oDiv.offsetLeft > 0 ? 5 : -5;
+			if( oDiv.offsetLeft == target ){
+				clearInterval(timer);
+			}else{
+				oDiv.style.left = oDiv.offsetLeft + speed + "px";
+			}
+		},30)
+	}
+</script>

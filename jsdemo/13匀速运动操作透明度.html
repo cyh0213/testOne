@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			div{
+				width: 100px;
+				height: 100px;
+				background: skyblue;
+				position: absolute;
+				left: 200px;
+				top: 300px;
+				opacity: .3;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	var timer = null;
+	var obj = document.querySelector("div");
+	console.log(obj.style.opacity);//得不到所要的数值   返回空
+	var alpha = 30;//对于不能直接获取到的元素属性   要用变量代替  并且因为计算机对小数的操作有误差     将其放大100倍    通过整数进行操作    在最后赋值的时候  再缩小100倍
+	
+	obj.onmouseover = function(){
+		startMove(100)
+	}
+	obj.onmouseout = function(){
+		startMove(30)
+	}
+	//target是目标值 
+	function startMove(target){
+		clearInterval(timer);
+		timer = setInterval(function(){
+			var speed = target - alpha > 0 ? 1 : -1;
+			if( alpha == target ){
+				clearInterval(timer);
+			}else{
+				alpha += speed;
+				obj.style.opacity = (alpha/100);  //赋值的时候除100   变回正确赋值区间
+			}
+		},30)
+	}
+</script>

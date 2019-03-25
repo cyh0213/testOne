@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			div{
+				width: 100px;
+				height: 100px;
+				margin-bottom: 20px;
+				opacity: 0.3;
+			}
+			#d1{
+				background: blue;
+			}
+			#d2{
+				background: pink;
+			}
+			#d3{
+				background: orange;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="d1"></div>
+		<div id="d2"></div>
+		<div id="d3"></div>
+	</body>
+</html>
+<script type="text/javascript">
+	var divs = document.querySelectorAll("div");
+	for(var i = 0;i<divs.length;i++){
+		divs[i].alpha = 30;//给每一个目标量都添加一个alpha属性    使其变成独立属性
+		divs[i].onmouseover = function(){
+			startMove(this,100)
+		}
+		divs[i].onmouseout = function(){
+			startMove(this,30)
+		}
+	}
+
+
+	/*
+	 多物体运动时    由于多个元素共用同一个定时器    导致某些元素不能运动到目标值
+	 解决方法：  让每一个元素都有一个独立的定时器  obj.timer
+	 
+	 多物体的淡入淡出
+
+
+	*/
+
+
+	function startMove(obj,target){
+		clearInterval(obj.timer);
+		obj.timer = setInterval(function(){
+			//缓冲运动原理
+			var speed2 = target - obj.alpha > 0 ? 1 : -1;
+			if(obj.alpha == target){
+				clearInterval(obj.timer);
+			}else{
+				obj.alpha += speed2;
+				obj.style.opacity = obj.alpha/100;
+			}
+		},30)
+	}
+
+
+</script>

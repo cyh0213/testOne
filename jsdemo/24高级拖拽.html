@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.active{
+				width: 100px;
+				height: 100px;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="button" name="" id="btn" value="创建div" />
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	/*
+	 构造函数：Drag
+	 属性：div
+	 功能：div的创建    拖拽   
+	 
+
+	 * */
+	$id("btn").onclick = function(){
+		var dd = new Drag();
+		dd.init();
+	}
+	function Drag(){
+		this.init = function(){//入口方法
+			this.div = create("div");
+			this.div.className = "active";
+			this.div.style.left = rand(0,window.innerWidth-100) + "px";
+			this.div.style.top = rand(50,window.innerHeight-100) + "px";
+			this.div.style.backgroundColor = getColor();
+			document.body.appendChild(this.div);
+			
+			//移动
+			this.move();
+		}
+		this.move = function(){//div的移动
+			this.div.onmousedown = function(e){
+				var e = e || event;
+				this.fnDown(e);
+				document.onmousemove = function(e){
+					var e = e || event;
+					this.fnMove(e);
+				}.bind(this);
+				document.onmouseup = function(){
+					this.fnUp();
+				}.bind(this);
+				
+				return false;
+				
+			}.bind(this);
+		}
+		this.fnUp = function(){
+			document.onmousemove = null;
+		}
+		this.fnDown = function(e){
+			this.disx = e.offsetX;
+			this.disy = e.offsetY;
+			
+		}
+		this.fnMove = function(e){
+			this.div.style.left = e.pageX - this.disx + "px";
+			this.div.style.top = e.pageY - this.disy + "px";
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

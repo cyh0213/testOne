@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			body{
+				background: #000000;
+			}
+			.fire{
+				width: 3px;
+				height: 3px;
+				background: white;
+				position: absolute;
+			}
+			.spark{
+				position: absolute;
+				width: 5px;
+				height: 5px;
+			}
+		</style>
+	</head>
+	<body>
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	/*
+	 火花 ：
+	 	属性： div
+	 	功能： 创建   移动   爆炸 ---创建烟花
+	 烟花 ：
+	 	属性： div
+	 	功能： 创建    移动
+	 */
+	window.onload = function(){
+		document.onclick = function(e){
+			var e = e || event;
+			
+			var f = new Fire({x : e.pageX,y : e.pageY});
+			f.init();//这两句可简写为   new Fire().init()
+		}
+	}
+	function Fire(pos){
+		this.pos = pos;//鼠标点击位置
+		this.init = function(){//火花创建  程序入口
+			this.div = create("div");
+			this.div.className = "fire";
+			document.body.appendChild(this.div);
+			this.div.style.left = this.pos.x + "px";
+			this.div.style.top = window.innerHeight - 100 + "px";
+			this.move();
+		}
+		//火花移动
+		this.move = function(){
+			startMove2( this.div,{ top: this.pos.y } , function(){
+				//火花运动完成后  消失   引出多个烟花
+				this.div.remove();
+				this.explode();
+			}.bind(this));
+		}
+		//火花爆炸
+		this.explode = function(){
+			var count = rand(30,60);
+			for(var i = 0 ; i < count ; i++){
+				var spark = new Spark(this.pos);
+				spark.init();
+			}
+		}
+	}
+	
+	
+	
+	function Spark(pos){
+		this.pos = pos;
+		//烟花的创建
+		this.init = function(){
+			this.div = create("div");
+			this.div.className = "spark";
+			document.body.appendChild(this.div);
+			this.div.style.backgroundColor = getColor();
+			this.div.style.left = this.pos.x + "px";
+			this.div.style.top = this.pos.y + "px";
+			
+			
+			this.move();
+		}
+		//烟花的移动
+		this.move = function(){
+			this.speedX = rand(-6,6);
+			this.speedY = rand(-10,5);
+			this.timer = setInterval(function(){
+				this.div.style.left = this.div.offsetLeft + this.speedX + "px";
+				this.div.style.top = this.div.offsetTop + this.speedY++ + "px";
+				if(this.div.offsetTop > 2*window.innerHeight/3){
+					this.div.remove();
+					clearInterval(this.timer);
+				}
+			}.bind(this),30)
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

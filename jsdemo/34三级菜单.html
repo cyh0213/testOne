@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			
+			ul li.yiji{
+				list-style-image: url(img/-.gif);
+			}
+		</style>
+		<script type="text/javascript" src="http://img.mobiletrain.org/templates/mobiletrain/js/jquery-1.11.3.min.js"></script>
+	</head>
+	<body>
+		<ul>
+			<li class="yiji">一级菜单1
+				<ul>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+					<li>二级菜单</li>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+				</ul>		
+			</li>
+			<li class="yiji">一级菜单2
+				<ul>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+					<li>二级菜单</li>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class="yiji">一级菜单3
+				<ul>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+					<li>二级菜单</li>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单
+								<ul>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class="yiji">一级菜单4
+				<ul>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单
+								<ul>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+								</ul>
+							</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+					<li>二级菜单</li>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class="yiji">一级菜单5
+				<ul>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单
+								<ul>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+									<li>四级菜单</li>
+								</ul>
+							</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+					<li>二级菜单</li>
+					<li>二级菜单
+						<ul>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+							<li>三级菜单</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		
+	
+		
+	</body>
+</html>
+<script type="text/javascript">
+	//将没有子菜单的里的列表项符号去掉  $("li").has("ul")    $("li:has(ul)")
+	$("li").not(":has(ul)").css("list-style","none");
+	
+	//为所有的li点击时  加阻止冒泡事件(防止没有子级的li点击时的冒泡行为)
+	$("li").click(function(){
+		event.stopPropagation();//阻止冒泡事件
+		
+	})
+	//为含有子级菜单ul的li添加点击事件
+	$("li:has(ul)").click(function(){
+		//如果当前操作的li的子元素ul是隐藏的  就显示
+		if( $(this).children("ul").css("display") == "none" ){
+			//$(this).children("ul").show(1000);
+			//减号
+			$(this).css("list-style-image","url(img/-.gif)");
+		}else{
+			//$(this).children("ul").hide(1000);
+			//加号  window下不能用加号（+）命名
+			$(this).css("list-style-image","url(img/1.gif)");
+		}
+		$(this).children("ul").toggle(1000);//显示或隐藏可以直接用toggle来实现
+	})
+	
+	
+	
+	
+	
+	
+	
+	
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="http://img.mobiletrain.org/templates/mobiletrain/js/jquery-1.11.3.min.js"></script>
+	</head>
+	<body>
+		<select name="" id="pro">
+			<option value="">请选择省</option>
+		</select>
+	</body>
+</html>
+<script type="text/javascript">
+	var arr = ["山西","河北","山东"];
+	for(var i = 0; i < arr.length;i++){
+		$("#pro").append('<option value="'+i+'">'+arr[i]+'</option>')
+	}
+	$("#pro").change(function(){
+		//var index = $(":selected").index()-1;
+		var index = $(this).val();
+		alert(index)
+	})
+	
+	
+	
+</script>

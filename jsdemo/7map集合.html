@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script type="text/javascript">
+//map集合存储的是键值对
+	var map = new Map();
+	//向集合内添加键值对
+	map.set("sname","小明");
+	map.set("age","15");
+	console.log(map)
+	//删除集合内的元素项    根据键  map.delete（键）
+	//map.delete("sname");
+	//判断集合中是否含有某个元素   根据键map.has(键)
+//	if(map.has("sname")){
+//		alert("has");
+//	}else{
+//		alert("nohas")
+//	}
+	//清空集合
+	//map.clear();
+	//取值  map.get(键)
+	//map.get("sname");
+	//遍历集合项    es6写法   forEach  和 箭头函数
+	for(var val of map){
+		
+		console.log(val);
+		console.log(map.get(val[0]))
+	}
+	
+</script>

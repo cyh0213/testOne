@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+<!--php输出方法-->		
+<?php
+echo "Hello World!";
+?>
+<!--php输出一个变量与一个常量的和-->
+<?=$r[pv]+30000?>		
+		
+	</body>
+</html>
+<script type="text/javascript">
+
+//getTime()兼容问题
+function getTime(time){
+	var myDate = new Date(time);
+	var u = navigator.userAgent;
+	var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;   //android终端
+	var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+	if(isiOS){
+		var time = time.toString()
+		var t = new Date(time.replace(/-/g,'/')).getTime();
+	}else{
+		var t = myDate.getTime();
+	}
+	return t;    
+}
+
+
+
+
+
+
+</script>

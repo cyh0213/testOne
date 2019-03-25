@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/plane.css"/>
+	</head>
+	<body>
+		<div class="main" id="main">
+			<ul class="options" id="options">
+				<li level="100">非常简单</li>
+				<li level="200">比较简单</li>
+				<li level="300">比较困难</li>
+				<li level="400">非常困难</li>
+			</ul>
+		</div>
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	/*
+	角色：
+	 	游戏引擎（入口）   GameEngine
+	 		属性： ul  main
+	 		功能： 对菜单的点击操作  动画（背景移动   动画飞机    logo创建）
+	 	战斗机    我方飞机   MyPlane
+	 		属性： 飞机元素
+	 		功能： 创建   移动   开火    碰撞   爆炸
+	 	敌机   Enemy
+	 		属性： 敌机元素
+	 		功能： 创建   移动   碰撞   爆炸   
+	 	子弹    Bullet
+	 		属性： 子弹元素
+	 		功能： 创建   移动   碰撞  爆炸
+	*/
+	window.onload = function(){
+		new GameEngine().start();
+	}
+	function GameEngine(){
+		//游戏引擎只有一个   采用单例模式
+		if( !GameEngine.instance ){
+			GameEngine.instance = {//键值对
+				body: $id("main"),
+				menus: $id("options"),
+				enemes: new Set(),
+				level: 0,//记录游戏难度等级
+				start : function(){
+					this.init();//入口方法  完成点击菜单
+				},
+				init: function(){//记录游戏等级
+					this.menus.addEventListener("click",function(e){
+						var e = e || event;
+						var target = e.target || e.srcElement;
+						if( target.nodeName == "LI" ){
+							this.level = target.getAttribute("level");//getAttribute()获取自定义属性值
+							this.menus.remove();
+							this.loading();//菜单结束后   引出游戏引擎动画  
+						}
+					}.bind(this));
+				},
+				loading : function(){
+					//创建logo
+					this.logo = create("div");
+					this.logo.className = "logo";
+					this.body.appendChild(this.logo);
+					
+					//创建动画飞机
+					this.loading = create("div");//动画飞机
+					this.loading.className = "loading";
+					this.body.appendChild(this.loading);
+					var timer = null;
+					var index = 1;
+					timer = setInterval(function(){
+						this.loading.style.backgroundImage = "url(images/loading"+ (++index) +".png)";
+						if( index == 3 ){
+							index = 0;
+						}
+					}.bind(this),600);
+					
+					//引擎背景移动动画
+					var speedY = 0;
+					setInterval(function(){
+						this.body.style.backgroundPositionY = speedY++ + "px";
+					}.bind(this),30);
+					
+					//3秒后  logo和loading消失  战斗机出现
+					setTimeout(function(){
+						this.logo.remove();
+						this.loading.remove();
+						clearInterval(timer);
+						//战斗机出场
+						this.gameStart();
+					}.bind(this),3000)
+					
+				},
+				//引出战斗机
+				gameStart : function(){
+					//我方战机出场
+					new MyPlane().show();
+					//子弹出场
+					this.fire();
+					//敌方战机场
+					this.autoCreateEnemy();
+				},
+				width : function(){//获取main容器的宽度
+					return this.body.offsetWidth;
+				},
+				append : function(obj){//将创建的战斗机  敌机  子弹等添加在main容器中
+					this.body.appendChild(obj.body);
+				},
+				left : function(){
+					return this.body.offsetLeft;
+				},
+				height: function(){
+					return this.body.offsetHeight;
+				},
+				fire : function(){
+					//子弹出场
+					setInterval(function(){
+						new Bullet().init().move();
+					}.bind(this),new GameEngine().level)
+				},
+				autoCreateEnemy : function(){
+					//敌机出场
+					setInterval(function(){
+						if( Math.random()>0.2){
+							//小飞机
+							//将new出来的敌机存入到set集合中，注意move（）方法返回this
+							this.enemes.add( new Enemy("small").init().move() );
+						}
+
+					}.bind(this),1000)
+					setInterval(function(){
+						if( Math.random()>0.3){
+							//中飞机
+							this.enemes.add( new Enemy("middle").init().move() );
+							
+						}
+
+					}.bind(this),2000)
+					setInterval(function(){
+						if( Math.random()>0.7){
+							//大飞机
+							this.enemes.add( new Enemy("large").init().move() );
+							
+						}
+
+					}.bind(this),4000)
+				}
+			}
+		}
+		
+		return GameEngine.instance;
+	}
+	
+	
+	function MyPlane(){
+		//单例模式
+		if(!MyPlane.instance){
+			MyPlane.instance = {
+				show : function(){
+					this.init();
+					this.addListener({type : "mouse"});//控制飞机的移动方式  鼠标？键盘？
+					
+				},
+				init : function(){
+					this.body = create("div");
+					this.body.className = "my-warplain";
+					//new GameEngine().body.appendChild(this.body);//将战斗机添加到游戏引擎中    等价于125行
+					new GameEngine().append(this);//将添加功能封装成函数后的书写  等价于124行
+					
+					//我方飞机初始位置  底部中间位置
+					this.body.style.bottom = 0;
+					this.body.style.left = (new GameEngine().width() - this.width())/2 + "px";
+					
+				},
+				addListener : function(obj){
+					//判断传入的是mouse还是key  确定是鼠标操作还是键盘操作
+					switch(obj.type){
+						case "mouse" : {
+							//鼠标在游戏引擎上移动   控制战斗机的移动
+							new GameEngine().body.onmousemove = function(e){
+								var e = e || event;
+								var _left = e.pageX - (this.width()/2) - new GameEngine().left();//战斗机移动的left值  = e.pageX - 战斗机宽度的一半  - 引擎.offsetLeft     默认鼠标位置对准战斗机的中心位置
+								
+								_left = Math.min( Math.max(0,_left) ,new GameEngine().width()- this.width() );//判断边界问题    最小是0  最大是引擎的宽度-飞机的宽度
+								//设置飞机的left值
+								//this.body.style.left = _left + "px";//不调用方法的写法
+								this.left( _left );
+								
+								
+							}.bind(this);
+							break;
+						}
+						case "key" : {
+							//键盘操作
+							document.onkeydown = function(e){
+								var e = e || event;
+								var code = e.keyCode || e.which;
+								switch(code){
+									case 37 : {//左
+										this.left( Math.max( 0, this.left() - 5 ) );//获取最小边界
+										break;
+									}
+									case 39 : {//右
+										this.left( Math.min( new GameEngine().width()- this.width(), this.left() + 5 ) );//获取最大边界
+										break;
+										
+									}
+								}
+							}.bind(this);
+						}
+					}
+						
+					
+				},
+				width : function(){
+					return this.body.offsetWidth;
+				},
+				left : function(val){
+					//如果val有值   设置   否则 获取
+					if( val || val == 0 ){
+						this.body.style.left = val + "px";
+					}
+					return this.body.offsetLeft;
+				},
+				top: function(){
+					return this.body.offsetTop;
+				},
+				explode: function(){
+					var res = confirm("游戏结束，是否继续游戏？");
+					if( res == true){
+						location.reload();
+					}else{
+						window.close();
+					}
+				}
+				
+			}
+		}
+		
+		return MyPlane.instance;
+	}
+	
+	function Enemy(type){
+		this.init = function(){//敌机的创建
+			this.body = create("div");
+			
+			switch(type){
+				case "small" : {
+					this.body.className = "enemy-small";
+					this.hp = 1;
+					this.speed = 4;
+					this.imgs = ["plain1_die1.png","plain1_die2.png","plain1_die3.png"];//存放敌机爆炸的图片
+					new GameEngine().append(this);
+					this.left( rand(0,new GameEngine().width() - this.width() ) );
+					this.top( -this.height() );
+					break;
+				}
+				case "middle" : {
+					this.body.className = "enemy-middle";
+					this.hp = 3;
+					this.speed = 3;
+					this.imgs = ["plain2_die1.png","plain2_die2.png","plain2_die3.png","plain2_die4.png"];
+					new GameEngine().append(this);
+					this.left( rand(0,new GameEngine().width() - this.width() ) );
+					this.top( -this.height() );
+					break;
+				}
+				case "large" : {
+					this.body.className = "enemy-large";
+					this.hp = 5;
+					this.speed = 2;
+					this.imgs = ["plain3_die1.png","plain3_die2.png","plain3_die3.png","plain3_die4.png","plain3_die5.png","plain3_die6.png"];
+					new GameEngine().append(this);
+					this.left( rand( 0, new GameEngine().width() - this.width() ) );
+					this.top( -this.height() );
+					break;
+				}
+			}
+			return this;
+
+		} 
+		this.left = function(val){
+			if(val || val == 0){
+				this.body.style.left = val + "px";
+			}
+			return this.body.offsetLeft;
+		}
+		this.move = function(){
+			this.timer = setInterval(function(){
+				this.top( this.top() + this.speed) + "px";
+				console.log(this.top( this.top() + this.speed) );
+				if( this.top() > new GameEngine().height() ){
+					this.body.remove();
+					clearInterval(this.timer);
+				}
+				if(pz(this.body,new MyPlane().body)){
+					new MyPlane().explode();
+				}
+			}.bind(this),30)
+			
+			return this;
+		}
+		this.top = function(val){
+			if(val || val == 0){
+				this.body.style.top = val + "px";
+			}
+			return this.body.offsetTop;
+		}
+		this.width = function(){
+			return this.body.offsetWidth;
+		}
+		this.height = function(){
+			return this.body.offsetHeight;
+		}
+		this.hurt = function(){//敌机受伤了
+			//如果血值变成0，就调用爆炸方法否则继续
+			--this.hp == 0 ? this.explode() : "";
+		}
+		this.explode = function(){//敌机爆炸
+			//飞机爆炸后停止运动
+			clearInterval( this.timer );
+			//如果飞机中弹后爆炸，后面的子弹再次和该飞机碰撞后， 子弹可以继续前进，不需要再和爆炸的敌机进行碰撞检测了
+			//将集合中爆炸的敌机删除
+			new GameEngine().enemes.delete(this);
+			
+			var timer = setInterval(function(){
+				if( this.imgs.length ==0 ){
+					this.body.remove();
+					return;
+				}
+				this.body.style.backgroundImage = "url(images/"+this.imgs.shift()+")";
+			}.bind(this),100)
+			//this.body.remove();
+		}
+	}
+	
+	function Bullet(){
+		this.init = function(){//子弹的创建
+			this.body = create("div");
+			this.body.className = "bullet";
+			new GameEngine().append(this);
+			var mp = new MyPlane();
+			this.body.style.left =  mp.left() + (mp.width()/2)- this.width()/2 + "px";
+			this.body.style.top = new MyPlane().top() - this.height() + "px";
+			
+			return this;
+		}
+		this.move = function(){//子弹的移动
+			this.timer = setInterval(function(){
+				this.top( this.top() - 5 ) + "px";
+				if( this.top() < -this.height() ){
+					this.body.remove();//子弹移出可视区后   销毁子弹
+					clearInterval(this.timer);
+				}
+				
+				//在子弹移动的定时器中 ， 以一个子弹为基准，遍历所有敌机    如果子弹和某个敌机碰撞了   子弹爆炸销毁    敌机受伤
+				//如何找到所有的敌机？？？  
+				//找所有敌机的方法，1---在引擎中定义一个enemes属性   值是一个set集合
+				//                 2---在创建敌机时，将所有敌机存入enemes集合中
+				//找到所有敌机后   遍历所有敌机
+				//console.log(new GameEngine().enemes)
+				var enemes = new GameEngine().enemes;
+				for( var en of enemes ){
+					if( pz(this.body,en.body) ){//碰撞后
+						this.explode();//子弹爆炸
+						clearInterval(this.timer);//停止被碰撞后的子弹的定时器
+						en.hurt();//敌机受伤了
+					}
+				}
+				
+				
+			}.bind(this),30)
+		} 
+		this.explode = function(){//子弹爆炸
+			this.body.className = "bullet_die";
+			setTimeout(function(){
+				this.body.remove();
+			}.bind(this),200)
+			
+			
+
+		}
+		this.width = function(){
+			return this.body.offsetWidth;
+		}
+		this.height = function(){
+			return this.body.offsetHeight;
+		}
+		this.top = function(val){
+			//如果val有值  设置传入的val值   否则就获取
+			if( val || val == 0){
+				this.body.style.top = val + "px"
+			}
+			return this.body.offsetTop;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

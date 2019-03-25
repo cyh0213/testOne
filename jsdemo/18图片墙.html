@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>照片墙</title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				
+			}
+			ul,li{
+				list-style: none;
+			}
+			ul{
+				margin: 0 auto;
+				width: 500px;
+				height: 500px;
+			}
+			ul li{
+				width: 100px;
+				height: 100px;
+				margin: 20px;
+				text-align: center;
+				line-height: 100px;
+				font-size: 20px;
+				color: #333;
+				border: 2px solid #000;
+				float: left;
+			}
+		</style>
+	</head>
+	<body>
+		<ul>
+			<li>照片1</li>
+			<li>照片2</li>
+			<li>照片3</li>
+			<li>照片4</li>
+			<li>照片5</li>
+			<li>照片6</li>
+			<li>照片7</li>
+			<li>照片8</li>
+			<li>照片9</li>
+		</ul>
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	//效果   图片中的位置要可以相互之间能进行拖拽和位置替换
+	//涉及到的效果    拖拽   碰撞   运动   
+	//由于涉及到拖拽效果   所以每个li 都需要有定位   同时每个li的位置不变       
+	//1.为保证每一个li的原始位置不变   需要记录每个li拖拽之前的位置     用数字存储
+	var arr = [];//用于存放每个li的位置
+	var list = document.querySelectorAll("li");
+	var zIndex = 1;//控制当前操作对象的层级最高
+	for(var i = 0; i < list.length; i++){
+		arr.push({left:list[i].offsetLeft,top:list[i].offsetTop})
+	}
+	//console.log(arr)
+	//2.由于每个li都需要被拖拽  所以每个li都需要定位   同时每张图片的位置不变 
+	for( var i = 0 ;i < list.length;i++){
+		list[i].style.position = "absolute";
+		list[i].style.left = arr[i].left + "px";
+		list[i].style.top = arr[i].top + "px";
+		//将每个li的margin值清空    保证li的位置不变
+		list[i].style.margin = "0";
+		//为每个li添加一个index属性，记录下标
+		list[i].index = i;
+	}
+	
+	//3.拖拽    定义一个函数
+	function drag(obj){
+		obj.onmousedown = function(e){
+			obj.style.zIndex = ++zIndex;
+			var e = e || event;
+			var disx = e.pageX - obj.offsetLeft;
+			var disy = e.pageY - obj.offsetTop;
+			document.onmousemove = function(e){
+				var e = e || event;
+				obj.style.left = e.pageX - disx + 'px'
+				obj.style.top = e.pageY - disy + 'px'
+				//判断当前拖拽的obj和哪些图片有碰撞   如果碰撞了  改变被碰撞li的边框
+				/*for(var i = 0 ;i < list.length;i++ ){
+					if(pz(obj,list[i])&& obj != list[i]){//排查当前拖拽元素的本省
+						list[i].style.border = "2px solid red";
+						
+					}else{
+						list[i].style.border = "";
+					}
+				}*/
+				//先清空所有的li的边框
+				for(var i = 0; i < list.length;i++){
+					list[i].style.border = "";
+				}
+				//拖拽时  确定和当前碰撞的li中  离的距离最近的li的边框变红
+				var nimg = nearImg(obj);
+				//如果有离拖拽元素最近的li   就改变边框样式
+				if(nimg){
+					nimg.style.border = "2px solid red"
+				}
+				
+			}
+			document.onmouseup = function(){
+				document.onmousemove = null;
+				//鼠标抬起时   拖拽的元素和离拖拽元素最近的li交换位置
+				var nimg = nearImg(obj);
+				//如果存在最近的li 即 nimg  就进行交换   否则obj回复到初始位置
+				if(nimg){
+					//交换
+					//要想知道每个li的位置   可以给每个li添加一个下标index   见67行
+					//根据li的下标值   就可以获得数组中对应下标的坐标位置
+					
+					startMove2(obj,{left:arr[nimg.index].left,top:arr[nimg.index].top});
+					startMove2(nimg,{left:arr[obj.index].left,top:arr[obj.index].top});
+					
+					//清楚nimg边框
+					nimg.style.border = "";
+					//交换nimg和obj的index值  解构赋值
+					[obj.index,nimg.index] = [nimg.index,obj.index]
+					
+				}else{
+					//obj回到初始位置
+					startMove2(obj,{left:arr[obj.index].left,top:arr[obj.index].top});
+					
+				}
+			}
+			return false;
+		}
+	}
+	//循环呢让9张图片都可以拖拽
+	for(var i = 0 ; i<list.length;i++){
+		drag(list[i]);
+	}
+	
+	
+	//利用勾股定理  实现俩个li之间的距离（以左上角为准   计算某两个li之间的距离）
+	function gg(obj1,obj2){
+		var a = obj1.offsetLeft - obj2.offsetLeft;
+		var b = obj1.offsetTop - obj2.offsetTop;
+		return Math.sqrt(a*a + b*b);
+		
+	}
+	//定义一个函数    功能：找离当前拖拽元素距离最近的li
+	function nearImg(obj){//obj表示当前拖拽的li
+		//假设变量minValue中存的是最小值；
+		var minValue = 9999;
+		//假设距离最小的li的下标是-1；
+		var minIndex = -1;
+		//找最近的li   前提    和某个li有碰撞   
+		for(var i = 0 ;i < list.length;i++ ){
+			if(pz(obj,list[i])&& obj != list[i]){//排查当前拖拽元素的本省
+				//如果当前拖拽的元素和某个li有碰撞  计算斜边c
+				var c = gg(obj,list[i]);
+				//判断  假设的minValue的值是不是最小的   如果不是  minValue=c
+				if(minValue > c){
+					minValue = c;
+					minIndex = i;
+				}
+				
+			}
+		}
+		
+		//循环结束后  如果minIndex的值不是-1了，说明找到离当前拖拽图片最近的li
+		if(minIndex != -1){
+			return list[minIndex];
+		}else{
+			return false;
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

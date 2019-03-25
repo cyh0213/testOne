@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>继承的应用</title>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			#d1{
+				width: 100px;
+				height: 100px;
+				background-color: skyblue;
+				position: absolute;
+				left: 0px;
+				top: 0px;
+				
+			}
+			#d2{
+				width: 100px;
+				height: 100px;
+				background: orange;
+				position: absolute;
+				left: 100px;
+				top: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="d1">父类</div>
+		<div id="d2">子类</div>
+		
+	</body>
+</html>
+<script type="text/javascript">
+	window.onload = function(){
+		var fd = new FatherDrag("d1");
+		fd.drag();
+		var sd = new SonDrag("d2");
+		sd.drag();
+	}
+
+
+	function FatherDrag(id){
+		this.div = document.getElementById(id);
+
+	}
+	
+	
+	FatherDrag.prototype.drag = function(){
+		this.div.onmousedown = function(e){
+			var e = e || event;
+			this.fnDown(e);
+			document.onmousemove = function(e){
+				var e = e || event;
+				this.fnMove(e);
+			}.bind(this);
+			document.onmouseup = function(){
+				this.fnUp();
+			}.bind(this);
+			
+			return false;
+			
+		}.bind(this);
+		
+		
+	}
+	FatherDrag.prototype.fnUp = function(){
+		document.onmousemove = null;
+	}
+	FatherDrag.prototype.fnDown = function(e){
+		this.disx = e.offsetX;
+		this.disy = e.offsetY;
+		
+	}
+	FatherDrag.prototype.fnMove = function(e){
+		this.div.style.left = e.pageX - this.disx + "px";
+		this.div.style.top = e.pageY - this.disy + "px";
+	}
+	
+	function SonDrag(id){
+		FatherDrag.call(this,id);
+		
+	}
+	SonDrag.prototype = new FatherDrag();
+	//重新实现子类的移动  添加边界处理功能
+	SonDrag.prototype.fnMove = function(e){
+		this.x = e.pageX - this.disx;
+		this.y = e.pageY - this.disy;
+		this.maxL = window.innerWidth - this.div.offsetWidth;
+		this.maxT = window.innerHeight - this.div.offsetHeight;
+		
+		this.x = Math.min(Math.max(0,this.x),this.maxL);
+		this.y = Math.min(Math.max(0,this.y),this.maxT);
+		
+		this.div.style.left = this.x +"px";
+		this.div.style.top = this.y + "px";
+	}
+
+
+
+
+	/*function fn(){
+		alert(this);
+	}
+	fn();//弹出框this指向window
+	//通过call方法，改变this指向---指向document
+	fn.call(document);*/
+	
+	/*构造函数的继承call原理 :  通过call方式在子类中调用父类构造函数   让父类中的this指向子类对象
+	语法：父类构造函数.call(this,参数)
+	call方法的第一个参数： 改变父类中的this指向
+			  第二个参数： 继承父类的属性，个数不固定    父类中有多少  子类中就要写多少
+
+	* */
+	/*function Father(name,age,addr,sex){
+		this.name = name;
+		this.age = age;
+		this.dance = function(){
+			return "跳舞";
+		}
+	}
+	
+	
+	function Son(name,age,addr,sex){
+		//继承父类   this指向子类new出来的对象
+		Father.call(this,name,age,addr,sex);
+	}
+	var son = new Son("香茗",23);
+	console.log(son);*/
+	
+	
+	/*构造函数继承   apply   原理和call一样
+	apply和call的区别：
+		apply的第二个参数要求是一个数组，可以使用arguments代替
+		call的第二个参数个数不固定
+	
+	*/
+		
+	
+	/*function Father(name,age,addr,sex){
+		this.name = name;
+		this.age = age;
+		this.addr = addr;
+		this.sex = sex;
+		this.dance = function(){
+			return "跳舞";
+		}
+	}
+	
+	
+	function Son(name,age,addr,sex){
+		//继承父类   this指向子类new出来的对象
+		//Father.apply(this,[name,age,addr,sex]);
+		Father.apply(this,arguments);
+	}
+	var son = new Son("香茗",23,"北京","男");
+	console.log(son);*/
+	
+	
+	
+	
+	//原型继承
+	function Father(){
+		this.money = 99999999;
+		this.liaomei = function(){
+			return "撩妹";
+		}
+	}
+	Father.prototype.sing = function(){
+		return "唱歌";
+	}
+	
+	function Son(){
+		
+	}
+	
+	Son.prototype = new Father();
+	var son = new Son();
+	console.log(son);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

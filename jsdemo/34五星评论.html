@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="http://img.mobiletrain.org/templates/mobiletrain/js/jquery-1.11.3.min.js"></script>
+	</head>
+	<style type="text/css">
+		ul,li{
+			list-style: none;
+		}
+		li{
+			float: left;
+			margin-right: 20px;
+			font-size: 30px;
+			color: red;
+		}
+	</style>
+	<body>
+		<ul class="comment">
+			<li>☆</li>
+			<li>☆</li>
+			<li>☆</li>
+			<li>☆</li>
+			<li>☆</li>
+		</ul>
+	</body>
+</html>
+<script type="text/javascript">
+	/*
+	1. 鼠标移入： 当前星星和前面的位实心的，后面的位空心的
+	2. 鼠标移出：
+			未点击：全部空心的 
+			有点击：当前点击的星星和前面的星星是实心的     后面的是空心的 
+	3. 鼠标点击：
+			前点击的星星和前面的星星是实心的   后面的是空心的 
+
+	 */
+	
+	var wjx_null = "☆";
+	var wjx_sel = "★";
+	
+	//委托
+	$("ul").on("mouseenter","li",function(){//鼠标移入
+		/*$(this).html(wjx_sel).prevAll().html(wjx_sel);
+		$(this).nextAll().html(wjx_null);*/
+		$(this).html(wjx_sel)
+			    .prevAll()
+			    .html(wjx_sel)
+			    .end()
+			    .nextAll()
+			    .html(wjx_null);//end()方法   结束end（）前离他最近的选择器      这里表示结束prevAll（）选择器      nextAll()的参照物是$(this)
+	}).on("mouseleave","li",function(){//鼠标离开
+		$(this).html(wjx_null);
+		//还有clicked  class名的及其前面的li添加clicked
+		$(".clicked").html(wjx_sel).prevAll().html(wjx_sel).end().nextAll().html(wjx_null);
+	}).on("click","li",function(){//点击
+		//点击时  将当前点击的li添加一个样式类（class名）   其余li没有样式类  
+		$(this).addClass("clicked").siblings().removeClass();
+		
+	})
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

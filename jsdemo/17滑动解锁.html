@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>滑动解锁</title>
+		<style type="text/css">
+			#iphone{position: relative;width: 426px;height: 640px;margin: 10px auto}
+			#lock{position: absolute;left: 50%;bottom: 33px;width: 358px;height: 62px;margin-left: -179px;background: red;}
+			#lock span{position: absolute;width: 93px;height: 62px;cursor: pointer;background: green;text-align: center;line-height: 62px;color: #000000;font-size: 20px;}
+		</style>
+	</head>
+	<body>
+		<div id="iphone">
+			<div id="lock"><span>滑动</span></div>
+		</div>
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	var lock = $id("lock");
+	var oSpan = lock.children[0];
+	var phone = $id("iphone");
+	oSpan.onmousedown = function(e){
+		var e = e || event;
+		var disx = e.offsetX;
+		document.onmousemove = function(e){
+			var e = e || event;
+			x = e.pageX - disx - lock.offsetLeft - phone.offsetLeft;
+			max = lock.offsetWidth - oSpan.offsetWidth;
+			//x = x<0?0:(x>max?max:x)
+			/*Math.max(0,x) 用于取最小值0   结果不能小于0
+			Math.min(max,x) 用于取最大值max   结果不能大于max*/
+		 	x = Math.min(Math.max(0,x),max); 
+		 	oSpan.style.left = x + "px";
+				
+		}
+		document.onmouseup = function(){
+			document.onmousemove = null;
+			if(x < max/2){
+				startMove(oSpan,0,"left")
+			}else{
+				startMove(oSpan,max,"left")
+			}
+		}
+		return false;
+		
+		
+	}
+</script>

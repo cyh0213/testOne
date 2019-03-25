@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+		*{
+			margin: 0 ;
+			padding: 0;
+		}
+			div{
+				width: 200px;
+				height: 200px;
+				background: skyblue;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<h2 id="tz">点击查看经过路线</h2>
+			
+		</div>
+	</body>
+</html>
+<script>
+	var oDiv = document.querySelector("div");
+	var positionArr = [];
+	oDiv.onmousedown = function(e){
+		var e = e || event;
+		var disx = e.offsetX || e.layerX;
+		var disy = e.offsetY || e.layerY;
+		document.onmousemove = function(e){
+			var e = e || event;
+			var x = e.pageX - disx;
+			var y = e.pageY - disy
+			
+			//去掉拖拽时的文字选中状态
+//			window.getSelection().removeAllRanges();//谷歌方法
+//			document.selection.empty();//ie方法
+			window.getSelection?window.getSelection().removeAllRanges():document.selection.empty();   //兼容写法
+			
+			
+			//边界处理
+			//获取最大左边界值
+			var maxL = window.innerWidth - oDiv.width;
+			if(x<0){//左边
+				x = 0;
+			}else if(x>maxL){//右边界
+				x = maxL;
+			}
+			//获取最大下边界值
+			var maxT = window.innerHeight - oDiv.width;
+			if(y<0){//上边界
+				y = 0;
+			}else if(y>maxT){//下边界
+				y = maxT;
+			}
+			oDiv.style.left = x + "px";
+			oDiv.style.top = y + "px";
+			
+			//移动时   获取鼠标坐标并存入数组中
+			positionArr.push({"left":oDiv.style.left,"top":oDiv.style.top})
+			
+			
+		}
+		document.onmouseup = function(){
+			document.onmousemove = null;
+		}
+		//return false;
+		/*
+		拖拽物体内有内容并且内容被选中时   会导致拖拽无效   解决办法有两种
+		1.在拖拽事件后加  return false   但是return false不能取消内容的选中状态
+		2.在移动事件中加window.getSelection().removeAllRanges();  取消文字被选中的状态     兼容写法window.getSelection?window.getSelection().removeAllRanges():document.selection.empty();  
+		*/
+		
+	}
+	
+	
+	//点击回访   div按拖拽路线返回初始点
+	var tz = document.getElementById("tz");
+	tz.onclick = function(){
+		var index = positionArr.length-1;
+		var timer = setInterval(function(){
+			oDiv.style.left = positionArr[index].left;
+			oDiv.style.top = positionArr[index].top;
+			index--;
+			if(index<=0){
+				clearInterval(timer);
+				positionArr = [];
+			}
+			
+		},30)
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

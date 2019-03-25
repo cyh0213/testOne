@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<ul>
+			<li>孩子多个1</li>
+			<li>孩子多个2</li>
+			<li>孩子多个3</li>
+			<li>孩子多个4</li>
+			<li>孩子多个5</li>
+		</ul>
+	</body>
+</html>
+<script type="text/javascript">
+	/*
+	 构造函数的属性即需要操作的页面元素------li
+	 构造函数的方法即对元素操作的行为--------1、鼠标的移入移出     2、颜色的设置
+	 
+	 构造函数的名称即功能名----HighLight
+	 		
+	 */
+	window.onload = function(){
+		var h1 = new HighLight(document.getElementsByTagName("li"));
+		h1.init();
+	}
+	function HighLight(list){
+		this.list = list;
+	}
+	HighLight.prototype.setColor = function(color,obj){
+		obj.style.backgroundColor = color;
+	}
+	//初始化方法---入口方法
+	HighLight.prototype.init = function(){
+		//此函数中的this，指向构造函数new出来的对象   即h1
+		var that = this;//将this预存给that，方便下面调用构造函数的方法
+		for(var i = 0; i < this.list.length; i++){
+			this.list[i].onmouseover = function(){
+				//此函数中的this指向的是事件的触发者list[i]
+				//颜色设置方法
+				//setColor()方法是构造函数的方法   应该有构造函数创建出的对象来调用  即 that
+				that.setColor("red",this);//此处的this指的是事件的触发者  
+			}
+			this.list[i].onmouseout = function(){
+				that.setColor("",this);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

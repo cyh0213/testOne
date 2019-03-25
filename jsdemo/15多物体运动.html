@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			div{
+				width: 100px;
+				height: 100px;
+				margin-bottom: 20px;
+				border: 2px solid red;
+				opacity: 0.3;
+			}
+			#d1{
+				background: blue;
+			}
+			#d2{
+				background: pink;
+			}
+			#d3{
+				background: orange;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="d1"></div>
+		<div id="d2"></div>
+		<div id="d3"></div>
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	var divs = document.querySelectorAll("div");
+	var json = {
+		"width":300,
+		"height":300,
+		"opacity":100
+	}
+	var json2 = {
+		"width":100,
+		"height":100,
+		"opacity":30
+	}
+	/*for(var i = 0;i<divs.length;i++){
+		divs[i].onmouseover = function(){
+			startMove(this,300,"width")
+		}
+		divs[i].onmouseout = function(){
+			startMove(this,100,"width")
+		}
+	}*/
+	for(var i = 0;i<divs.length;i++){
+		divs[i].onmouseover = function(){
+			startMove2(this,json)
+		}
+		divs[i].onmouseout = function(){
+			startMove2(this,json2)
+		}
+	}
+
+	/*
+	 多物体运动时    由于多个元素共用同一个定时器    导致某些元素不能运动到目标值
+	 解决方法：  让每一个元素都有一个独立的定时器  obj.timer
+	 
+
+
+	*/
+	//var timer = null;
+//	function startMove(obj,target,attr){
+//		clearInterval(obj.timer);
+//		obj.timer = setInterval(function(){
+//			//缓冲运动原理
+//			var current = parseInt(getStyle(obj,attr))//获取行内元素
+//			var speed  = (target - current)/10;
+//			speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+//			if(current == target){
+//				clearInterval(obj.timer);
+//			}else{
+//				obj.style[attr] = current + speed + 'px';
+//			}
+//		},30)
+//	}
+
+/*
+ 备注：
+ 	如果给物体加上边框     不能用offsetWidth 获取数据    可用 clientWidth   替换 offsetWidth    clientWidth  不包括边框    但是如果物体加了padding值  clientWidth也不可用
+ 			offsetWidth与width的区别
+ 			offsetWidth ：
+ 				1. 内容 + border + padding    
+ 				2.不带单位
+ 				3.可以得到非行内元素的样式值
+ 			width ：
+ 				1. 内容    
+ 				2. 带单位
+ 				3.不可获得非行内元素样式值
+
+ 			
+ 
+ 	
+ */
+//获取非行内元素样式值
+	//var divs = document.querySelectorAll("div");
+	//谷歌获取非行内元素样式值方法   window.getComputedStyle(divs[0],false)["width"]
+	//IE获取非行内元素样式值方法     divs[0].currentStyle["width"]
+//获取非行内元素样式值函数
+function getStyle(obj,attr){
+	if(window.getComputedStyle){
+		return window.getComputedStyle(obj,false)[attr]
+	}else{
+		return obj.currentStyle[attr];
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		序号：<input type="text" id="xuhao"/><br/>
+		姓名：<input type="text" id="usename"/><br/>
+		性别：<input type="text" id="sex"/><br/>
+		年龄：<input type="text" id="age"/><br/>
+		
+		<input type="button" id="savebtn"  value="保存"/>
+		
+		
+		<table id="tab" border="1" cellspacing="0" cellpadding="0">
+			<tr><th>序号</th><th>姓名</th><th>性别</th><th>年龄</th><th>操作</th></tr>
+			<tr><td>1</td><td>张三</td><td>男</td><td>25</td><td><a href="javascript:;" name = "chakan">查看详细信息</a>&nbsp;&nbsp;&nbsp;<a href="javasctipt:;" class="delbtn">删除</a></td></tr>
+			<tr><td>2</td><td>张三</td><td>男</td><td>25</td><td><a href="javascript:;" name = "chakan">查看详细信息</a>&nbsp;&nbsp;&nbsp;<a href="javasctipt:;" class="delbtn">删除</a></td></tr>
+			<tr><td>3</td><td>张三</td><td>男</td><td>25</td><td><a href="javascript:;" name = "chakan">查看详细信息</a>&nbsp;&nbsp;&nbsp;<a href="javasctipt:;" class="delbtn">删除</a></td></tr>
+			<tr><td>4</td><td>张三</td><td>男</td><td>25</td><td><a href="javascript:;" name = "chakan">查看详细信息</a>&nbsp;&nbsp;&nbsp;<a href="javasctipt:;" class="delbtn">删除</a></td></tr>
+			<tr><td>5</td><td>张三</td><td>男</td><td>25</td><td><a href="javascript:;" name = "chakan">查看详细信息</a>&nbsp;&nbsp;&nbsp;<a href="javasctipt:;" class="delbtn">删除</a></td></tr>
+			<tr><td>6</td><td>张三</td><td>男</td><td>25</td><td><a href="javascript:;" name = "chakan">查看详细信息</a>&nbsp;&nbsp;&nbsp;<a href="javasctipt:;" class="delbtn">删除</a></td></tr>
+		</table>
+		<div id="detail" style="width: 150px;height:200px;border:1px solid #87CEEB;position: absolute;display: none;background: #fff;"></div>
+	</body>
+</html>
+<script type="text/javascript">
+function $id(id){
+	return document.getElementById(id);
+}
+//console.log($id("savebtn"));
+function create(element){
+	var e = document.createElement(element);
+	return e;
+}
+//console.log(create("td"));
+	$id("savebtn").onclick = function(){
+		var tr = $id("tab").children[0].children[1].cloneNode(true);
+		tr.children[0].innerHTML = $id("xuhao").value;
+		tr.children[1].innerHTML = $id("usename").value;
+		tr.children[2].innerHTML = $id("sex").value;
+		tr.children[3].innerHTML = $id("age").value;
+		$id('tab').appendChild(tr);
+		$id("xuhao").value = "";
+		$id("usename").value = "";
+		$id("sex").value = "";
+		$id("age").value = "";
+		
+	};
+	//使用事件委托为所有td标签添加一个点击事件
+	$id('tab').onclick = function(e){
+		var e = e || event;
+		var target = e.target || e.srcElement;
+		if( target.nodeName =="TD" ){
+			//创建文本框
+			var opt = create("input");
+			opt.type = "text";
+			opt.value = target.innerHTML;
+			
+			//将点击的td的内容清空   并将创建的input元素添加到td里   并获取焦点
+			target.innerHTML = "";
+			target.appendChild(opt);
+			opt.focus();
+			
+			//当input失去焦点是    用input的值替换td标签里的内容
+			opt.onblur = function(){
+				target.innerHTML = opt.value;
+			}
+			
+			
+		}
+	};
+	
+	//查看详细信息   使用事件委托
+	$id("tab").addEventListener("click",function(e){
+		var e = e || event;
+		e.stopPropagation();
+		var target = e.target || e.srcElement;
+		if( target.name == "chakan"){
+			$id("detail").style.display = "block";
+			$id("detail").style.left = e.pageX + "px";
+			$id("detail").style.top = e.pageY + "px";
+			$id("detail").innerHTML  = target.parentNode.parentNode.children[1].innerHTML+"<br>"+target.parentNode.parentNode.children[2].innerHTML+"<br>"+target.parentNode.parentNode.children[3].innerHTML;
+		}
+	})
+	//鼠标离开是detail消失
+	document.onclick = function(){
+		$id("detail").style.display = "none";
+	}
+	
+	
+	//删除
+	$id("tab").addEventListener("click",function(e){
+		var e = e || event;
+		var target = e.target || e.srcElement;
+		if( target.className == "delbtn"){
+			target.parentNode.parentNode.remove();
+		}
+	})
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

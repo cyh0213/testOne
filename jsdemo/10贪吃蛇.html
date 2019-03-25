@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			ul,li{
+				list-style: none;
+			}
+			#main{
+				margin: 20px auto;
+				position: relative;
+				overflow: hidden;
+			}
+			#gird{
+				border: 1px solid black;
+				border-bottom: none;
+				border-right: none;
+				overflow: hidden;
+			}
+			#gird li{
+				border: 1px solid black;
+				border-left: none;
+				border-top: none;
+				float: left;
+				
+			}
+			#gameScore{
+				float: right;
+				
+			}
+			#snake{
+				
+			}
+			#snake .snakeHead{
+				background: red;
+				position: absolute;
+			}
+			#snake .snakeBody{
+				background: red;
+				opacity: 0.5;
+				position: absolute;
+				
+			}
+			.food{
+				background: blue;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<ul id="gird">
+				
+			</ul>
+			<input type="button" name="gameButton" id="gameButton" value="开始" />
+			<div id="gameScore">积分： 0</div>
+			<div id="snake">
+				<!--<div class="snakeHead"></div>
+				<div class="snakeBody"></div>
+				<div class="snakeBody"></div>
+				<div class="snakeBody"></div>
+				<div class="snakeBody"></div>-->
+				
+			</div>
+			<!--<div id="food"></div>-->
+		</div>
+		
+		
+		
+	</body>
+</html>
+<script type="text/javascript">
+	//表格数据
+	var girdData = {
+		size : 20,
+		rows : 25,
+		cols : 25
+	}
+	//蛇的数据
+	var snakeData = {
+		pos : 28,   //位置  下标
+		dir : 39   //方向 向右     37  38  39  40
+	}
+	var gird = $id("gird");
+	var main = $id("main");
+	var oBtn = $id('gameButton');
+	var girdList = gird.getElementsByTagName("li")//网格li
+	var snake = $id("snake");
+	var snakeDiv = snake.getElementsByTagName("div");//知道蛇身体的所有div
+	var gameScore = $id("gameScore");
+	var count = 0;
+	//页面加载  创建表格
+	createGird();
+	function createGird(){
+		main.style.width = (girdData.size+1)*girdData.cols + 1 + "px";
+		for(var i = 0;i < girdData.rows * girdData.cols; i++ ){
+			var li = create("li");
+			li.style.width = li.style.height = girdData.size + "px";
+			gird.appendChild(li);
+		}
+	}
+	
+	
+	//点击开始
+		oBtn.onclick = function(){
+			//创建蛇头
+			createSnakeHead();
+			//创建食物
+			createFood();
+			//蛇的运动
+			snakeMove();
+			//蛇的操作
+			snakeBind();
+			
+		}
+		//创建蛇头：创建一个div   div位置由用户设定
+		function createSnakeHead(){
+			var snakeHead = create("div");
+			snakeHead.className = "snakeHead";
+			snakeHead.style.left = girdList[snakeData.pos].offsetLeft + "px";
+			snakeHead.style.top = girdList[snakeData.pos].offsetTop + "px";
+			snake.appendChild(snakeHead);
+			snakeHead.style.width = snakeHead.style.height = girdData.size + "px"
+			
+		}
+		//创建食物：创建一个div   div位置随机
+		function createFood(){
+			food = create("div");
+			var randIndex = rand( 0, girdData.cols*girdData.rows-1);//随机下标
+			food.className = "food";
+			gird.appendChild(food);
+			food.style.left = girdList[randIndex].offsetLeft + "px";	
+			food.style.top = girdList[randIndex].offsetTop + "px";
+			food.style.width = food.style.height = girdData.size + "px"
+			
+		}
+		//蛇出界   如果和所有的li都碰上说明没有出界   否则出界
+		function isOut(){
+			for(var i = 0;i < girdList.length ; i++){
+				if( pz(snakeDiv[0] , girdList[i])){ //和某个表格碰撞   表示没有出界
+					return false;
+				}
+	
+			}
+			return true;//没碰上    表示和所有li没有碰撞   出界了
+		}
+		
+		//蛇和自身的碰撞
+		function isSelf(){
+			for(var i = 1;i<snakeDiv.length;i++){
+				if( pz( snakeDiv[0],snakeDiv[i] ) ){
+					return true; //碰上了
+				}
+			}
+			return false;//没碰上
+		}
+		
+		
+		
+		
+		//蛇的运动：初始涌动方向由用户设定   由定时器控制运动  检测和食物碰撞----食物变成蛇的身体    随着蛇头运动
+		function snakeMove(){
+			setInterval(function(){
+				//检测出界
+				if( isOut() || isSelf() ){//isOut函数为真   表示出界了  和li没有碰撞   游戏结束   或者自身相碰
+					alert("gameover");
+					location.reload();
+				}
+				
+				
+				//判断蛇头和食物是否碰撞   碰撞后  食物变成蛇的身体   将食物添加到蛇的body中
+				if( pz( snakeDiv[0] , food)){
+					food.className = "snakeBody";
+					//将食物添加到蛇的body中   appendChild()  
+					snake.appendChild(food);//将食物剪切到sanke中
+					count++;
+					gameScore.innerHTML = "积分："+ count;
+					//随机创建食物
+					createFood();
+				}
+				
+				//让蛇的身体跟随蛇头运动   
+				for(var i = snakeDiv.length-1; i > 0; i--){
+					snakeDiv[i].style.left = snakeDiv[i-1].style.left;
+					snakeDiv[i].style.top = snakeDiv[i-1].style.top;
+					
+				}
+				
+				
+				//判断初始方向
+				switch( snakeData.dir ){
+					case 37 :  //向左
+						snakeDiv[0].style.left = snakeDiv[0].offsetLeft-(girdData.size + 1) + "px";
+						break;
+					case 39 :  //向右
+						snakeDiv[0].style.left = snakeDiv[0].offsetLeft+(girdData.size + 1) + "px";
+						break;
+					case 38 :  //向上
+						snakeDiv[0].style.top = snakeDiv[0].offsetTop-(girdData.size + 1) + "px";
+						break;
+					case 40 :  //向下
+						snakeDiv[0].style.top = snakeDiv[0].offsetTop+(girdData.size + 1) + "px";
+						break;
+				}
+			},300)
+		}
+		//蛇的操作：控制蛇的运动方向
+		function snakeBind(){
+			document.onkeydown = function(e){
+				var e = e || event;
+				var code = e.keyCode;
+				switch( code ){
+					case 37 :
+						snakeData.dir = 37;
+						break;
+					case 38 :
+						snakeData.dir = 38;
+						break;
+					case 39 :
+						snakeData.dir = 39;
+						break;
+					case 40 :
+						snakeData.dir = 40;
+						break;
+				}
+			}
+		}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+function $id(id){
+	return document.getElementById(id);
+}
+//console.log($id("savebtn"));
+function create(element){
+	var e = document.createElement(element);
+	return e;
+}	
+function rand(min,max){
+	return Math.round(Math.random()*(max-min))+min;
+}	
+//碰撞函数
+function pz(obj1,obj2){
+		//第一个物体与第二个物体碰撞的临界值
+		var L1 = obj1.offsetLeft;
+		var R1 = obj1.offsetLeft + obj1.offsetWidth;
+		var T1 = obj1.offsetTop;
+		var B1 = obj1.offsetTop + obj1.offsetHeight;
+		
+		//第二个物体与第一个物体碰撞的临界值
+		var L2 = obj2.offsetLeft;
+		var R2 = obj2.offsetLeft + obj2.offsetWidth;
+		var T2 = obj2.offsetTop;
+		var B2 = obj2.offsetTop + obj2.offsetHeight;
+		
+		if( R1<L2||L1>R2||B1<T2||T1>B2 ){//碰不上的条件
+			return false;
+		}else{
+			return true;
+		}
+		
+		
+	}	
+</script>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>es6构造函数和继承</title>
+	</head>
+	<body>
+	</body>
+</html>
+<script type="text/javascript">
+	//es6定义构造函数   class
+	/*class Student{
+		//构造属性
+		constructor(name,age,score){
+			this.name = name;
+			this.age = age;
+			this.score = score;
+		}
+		study(){
+			alert("学习ing");
+		}
+		sleep(){
+			alert("醒醒吧")
+		}
+	}
+	
+	var stu = new Student("小明",23,98);
+	console.log(stu);*/
+	
+	
+	
+	//es6继承
+	class Father{
+		constructor(name,age,tel){//constructor  定义属性
+			this.name = name;
+			this.age = age;
+			this.tel = tel;
+		}
+		drink(){
+			return "喝酒"
+		}
+	}
+	
+	
+	//创建子类对象   继承Father父类   estends继承
+	class Son extends Father{
+		constructor(name,age,tel,score){
+			super(name,age,tel);//继承父类的属性
+			this.score = score;//子类特有的属性
+		}
+		study(){
+			alert("学习ing")
+		}
+	}
+	var son = new Son("mx",22,"999",100);
+	console.log(son);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

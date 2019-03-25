@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script type="text/javascript">
+//	var lce = Symbol("香茗");
+//	//lec是Symbol类型   symbol类型的数据不能直接通过alert输出   需要转换成字符串才能通过alert输出
+//	console.log(lce);
+//	alert(lce.toString())
+
+
+	//symbol类型  可以作用在对象属性上
+//	var lce = Symbol();
+//	var obj = {
+//		[lce] : "香茗"    //对象的属性是symbol类型
+//	}
+//	//symbol类型的属性  取值必须是obj[lce]   不能用obj.lce
+//	console.log(obj[lce]);
+//	//修改symbol类型的属性
+//	obj[lce] = "web前端";
+//	console.log(obj[lce]);
+	
+	//symbol可以用来保护对象的某个属性
+	var obj= {
+		"sname" : "小明",
+		//"age"   : 18,
+		"skill" : "web"
+	}
+	//定义一个symbol类型的age  用于保护年龄
+	var age = Symbol();
+	obj[age] = 18;
+	//console.log(obj)
+	for(var key in obj){
+		console.log(key + "=>" + obj[key])
+	}
+		
+	//如果想输出年龄  
+	console.log(obj[age])
+	
+</script>

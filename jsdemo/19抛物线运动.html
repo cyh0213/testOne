@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>加入购物车--抛物线</title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				
+			}
+			#addToCart{
+				/*position: fixed;
+				left: 600px;*/
+				cursor: pointer;
+				width: 100px;
+				height: 40px;
+				line-height: 40px;
+				border: 1px solid deeppink;
+				text-align: center;
+				color: deeppink;
+				/*top: 500px;*/
+				margin: 500px auto;
+			}
+			#addToCart:hover{
+				color: #fff;
+				background: deeppink;
+				
+			}
+			#shopCart{
+				position: fixed;
+				right: 0px;
+				top: 200px;
+				color: darkblue;
+			}
+			#shopNum{
+				width: 60px;
+				height: 25px;
+				background: deeppink;
+				color: black;
+				text-align: center;
+				line-height: 25px;
+			}
+			.active{
+				width: 25px;
+				height: 25px;
+				background: skyblue;
+				position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="addToCart">
+			添加到购物车
+		</div>
+		<div id="shopCart">
+			购物车
+			<p id="shopNum"></p>
+		</div>
+		
+		
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	var addBtn = $id("addToCart");
+	var shopCart = $id("shopCart");
+	var num = $id("shopNum");
+	var sum = 0;
+	addBtn.onclick = function(){
+		//1.定义三点坐标    商品的起始点   结束点   最高点
+		var startPoint = {
+			x : addBtn.offsetLeft + addBtn.offsetWidth/2,
+			y : addBtn.offsetTop,
+		}
+		var endPoint = {
+			x : shopCart.offsetLeft + shopCart.offsetWidth/2,
+			y : shopCart.offsetTop,
+		} 
+		var topPoint = {
+			x : endPoint.x - 100,
+			y : endPoint.y - 80,
+		}
+		//2根据三点坐标确定抛物线方程的三个系数   a  b  c     以下是抛物线系数公式     
+		var a = ((startPoint.y - endPoint.y)*(startPoint.x-topPoint.x)-(startPoint.y-topPoint.y)*(startPoint.x-endPoint.x))/((startPoint.x*startPoint.x - endPoint.x*endPoint.x)*(startPoint.x - topPoint.x)-(startPoint.x*startPoint.x-topPoint.x*topPoint.x)*(startPoint.x-endPoint.x));
+		
+		var b = ((endPoint.y - startPoint.y) - a*(endPoint.x*endPoint.x - startPoint.x*startPoint.x))/(endPoint.x - startPoint.x);
+		
+		var c = startPoint.y - a*startPoint.x*startPoint.x - b * startPoint.x
+		
+		//3  创建商品
+		var good = create("div");
+		good.className = "active";
+		document.body.appendChild(good);
+		var x = startPoint.x;
+		var y = startPoint.y;
+		good.style.left = x + "px";
+		good.style.top = y + "px";
+	
+		//4启动定时器   控制商品运动     实际是操作商品的left和top值    left为抛物线上对应的x坐标    top为y点的坐标
+		var timer = setInterval(function(){
+			//5商品的停止条件
+		
+			if(x<endPoint.x){
+				x = x + 5;
+				y = a*x*x + b*x + c;
+				good.style.left = x + "px";
+				good.style.top = y + "px";
+			}else{
+				clearInterval(timer);
+				good.remove();
+				sum++;
+				num.innerHTML = sum;
+			}
+			
+		},30)
+		
+		
+		
+		
+		
+		
+		
+	}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

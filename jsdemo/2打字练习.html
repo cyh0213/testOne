@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/animate.min.css" />
+	</head>
+	<body bgcolor="black">
+		<mian>
+			<div id="char" style="color: #fff">A</div>
+			<div id="result" style="color: #fff">请在按键上按下屏幕上显示的字母</div>
+		</mian>
+	</body>
+</html>
+<script type="text/javascript">
+	var code = null;
+	var oChar = document.getElementById("char");
+	var oResult = document.getElementById("result");
+	function showChar(){
+		code = rand(65,90);
+		var ch = String.fromCharCode(code);
+		oChar.innerHTML = ch;
+		
+	}
+	showChar();
+	var okCount = 0;
+	var errorCount = 0;
+	document.onkeydown = function(e){
+		var e = e || event;
+		
+		if( code == e.keyCode ){
+			okCount++;
+			showChar();
+			oChar.className = "animated zoomIn"
+		}else{
+			errorCount++;
+			oChar.className = "animated shake"
+			
+		}
+		setTimeout(function(){
+			oChar.className = ""
+		},500)
+		fn();
+	}
+	
+	function fn(){
+		
+		var r = 100*(okCount/(okCount+errorCount)).toFixed(2);
+		oResult.innerHTML = "正确" + okCount + '个';
+		oResult.innerHTML += "错误" + errorCount + '个';
+		oResult.innerHTML += "正确率" + r + '%';
+		console.log(okCount,errorCount,r)
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	function rand(min,max){
+		return Math.round(Math.random()*(max-min))+min;
+	}
+</script>
+

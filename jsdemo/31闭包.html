@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>闭包及闭包应用</title>
+	</head>
+	<body>
+		<ul>
+			<li>兄弟多个1</li>
+			<li>兄弟多个2</li>
+			<li>兄弟多个3</li>
+			<li>兄弟多个4</li>
+			<li>兄弟多个5</li>
+		</ul>
+		
+	</body>
+</html>
+<script type="text/javascript">
+	//闭包应用
+	//点击li获取下标
+	var list = document.getElementsByTagName("li");
+	//方法一：
+	for( var i = 0; i < list.length; i++){
+		list[i].index = i;
+		list[i].onclick = function(){
+			alert(index);
+		}
+	}
+	//方法二： es6方法  let
+	for( let i = 0; i < list.length; i++){
+		list[i].onclick = function(){
+			alert(i);
+		}
+	}
+
+	//方法三：闭包
+	for( var i = 0; i < list.length; i++){
+		list[i].onclick = (function(index){
+			return function(){
+				alert(index)
+			}
+		})(i)
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//匿名函数自执行： 
+	//无参数
+	/*(function(){
+		alert("hello");
+	})();*/
+	
+	
+	//有参数
+	/*(function(a,b){
+		alert(a+b)
+	})(2,5);*/
+	
+	//有返回值
+	/*var res = (function(a,b){
+		return a+b;
+	})(3,5);
+	alert(res);*/
+	
+	
+	/*
+	闭包： 一个函数的内部返回一个匿名函数   这个匿名函数就称为闭包
+	闭包： 在一个函数内部可以访问到另一个函数内的局部变量，这个函数就叫做闭包
+	闭包的形式多样，但都是局部变量全局执行
+	闭包的作用： 可以访问一个函数内部的私有变量
+				通过闭包,可以延长一个局部变量的生存周期
+	注意： 闭包中的this指向window			
+
+	*/
+	/*function fun(){
+		return function(){
+			return 'hello';
+		}
+	}
+	alert( fun() );//得到： function(){return 'hello';}这个匿名函数
+	alert( fun()() );//得到： hello*/
+	
+	
+	/*function fun(){
+		var num= 10;
+		return function(){//闭包： 在一个函数内部可以访问到另一个函数内的局部变量，这个函数就叫做闭包
+			alert( num );
+		}
+	}
+	fun()();//可以得到num*/
+	
+	
+	//通过闭包,可以延长一个局部变量的生存周期
+	function fn(){
+		var num = 10;
+		return function(){
+			return ++num;
+		}
+	}
+	var res = fn();
+	alert( res() );//11
+	alert( res() );//12
+	alert( res() );//13
+	//res（）可以无限执行，变量res会一直存在       销毁的方法是 ：  利用js中垃圾回收机制： 将一个变量的值变成null
+	res = null;
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>

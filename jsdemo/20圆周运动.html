@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				
+			}
+			#ball{
+				width: 30px;
+				height: 30px;
+				background: salmon;
+				position: absolute;
+				left: 400px;
+				top: 100px;
+				border-radius: 50%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="ball"></div>
+	</body>
+</html>
+<script type="text/javascript">
+	//弧度= 角度*Math.PI/180   Math.sin(弧度值)  Math.cos(弧度值)
+	//圆周运动
+	var r = 200;
+	var deg = 90;
+	timer = null;
+	var odiv = document.querySelector("div");
+	//圆心坐标
+	var centerPoint = {
+		x : odiv.offsetLeft + odiv.offsetWidth/2,
+		y : r + odiv.offsetHeight + odiv.offsetTop
+	}
+	timer = setInterval(function(){
+		odiv.style.left = centerPoint.x + r*Math.cos(deg*Math.PI/180) + "px";
+		odiv.style.top = centerPoint.y + r*Math.sin(deg*Math.PI/180) + "px";
+		deg -= 3;
+		
+	},30)
+	
+	//椭圆运动
+	var a = 400;
+	var b = 200;
+	var deg = 90;
+	timer = null;
+	var odiv = document.querySelector("div");
+	//圆心坐标
+	var centerPoint = {
+		x : odiv.offsetLeft + odiv.offsetWidth/2,
+		y : b + odiv.offsetHeight + odiv.offsetTop
+	}
+	timer = setInterval(function(){
+		odiv.style.left = centerPoint.x + a*Math.cos(deg*Math.PI/180) + "px";
+		odiv.style.top = centerPoint.y + b*Math.sin(deg*Math.PI/180) + "px";
+		deg -= 3;
+		
+	},30)
+	
+	
+	
+	
+</script>

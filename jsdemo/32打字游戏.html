@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				
+			}
+			#box{
+				width: 800px;
+				height: 560px;
+				position: relative;
+				margin: 5px auto;
+				background: #000000;
+				
+			}
+			#dialog{
+				width: 300px;
+				height: 200px;
+				padding: 20px 0;
+				position: absolute;
+				left: 0;
+				top: 0px;
+				bottom: 0px;
+				right: 0px;
+				margin: auto;
+				background: #0ba7fa;
+				border-radius: 5px;
+				
+			}
+			#dialog li{
+				width: 100%;
+				line-height: 40px;
+				text-align: center;
+				cursor: pointer;
+				list-style: none;
+				
+			}
+			#dialog li:hover{
+				background: #f7ad07;
+				
+			}
+			.footer{
+				width: 800px;
+				height: 40px;
+				margin: 10px auto;
+				border: 1px solid #b5b5b5;
+				border-radius: 5px;
+				
+			}
+			.footer input{
+				display: block;
+				border: none;
+				width: 100%;
+				height: 100%;
+				text-align: center;
+				font-size: 20px;
+				border-radius: 5px;
+			}
+			#board{
+				position: absolute;
+				left: 20px;
+				top: 20px;
+				color: #FFFFFF;
+				font-size: 40px;
+				
+			}
+			.active{
+				position: absolute;
+				background: #eee;
+				padding: 5px;
+				font-size: 20px;
+				
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<div id="board">0</div>
+			<ul id="dialog">
+				<li deg="2500" speed="100" num="20">简单难度</li>
+				<li deg="2000" speed="75" num="15">中等难度</li>
+				<li deg="1500" speed="50" num="10">较高难度</li>
+				<li deg="800" speed="25" num="5">热血难度</li>
+				<li deg="500" speed="10" num="1">疯狂难度</li>
+			</ul>
+		</div>
+		<div class="footer">
+			<input type="text" name="iptBox" id="iptBox" />
+		</div>
+	</body>
+</html>
+<script src="js/public.js"></script>
+<script>
+	/*
+	 deg : 单词出现的间隔时间
+	 speed： 单词运动时，定时器的间隔时间
+	 num： 单词落地的个数  控制游戏结束的条件
+	 */
+	window.onload = function(){
+		new GameEngine().init();
+		new Words().keydown()
+	}
+	
+	
+	
+	//游戏引擎： 功能 -- 记录等级
+	function GameEngine(){
+		if( !GameEngine.instance ){
+			GameEngine.instance = {
+				ipt: $id("iptBox"),
+				menus : $id("dialog"),
+				board : $id("board"),
+				box : $id("box"),
+				badNum : 0,
+				score : 0,
+				init : function(){
+					this.menus.onclick = function(e){
+						this.ipt.focus();
+						var e = e || event;
+						var target = e.target || e.srcElement;
+						if( target.nodeName == "LI"){
+							//记录等级
+							//单词出现到落地的时间
+							this.speed = target.getAttribute("speed");
+							//单词创建间隔时间
+							this.deg = target.getAttribute("deg");
+							//错词个数
+							this.num = target.getAttribute("num");
+							
+							//菜单消失
+							this.menus.remove();
+							
+							//创建单词
+							setInterval( function(){
+								new Words().init().move();
+							}.bind(this),this.deg)
+						}
+					}.bind(this)
+				}
+			}
+		}
+		return GameEngine.instance;
+	}
+
+	
+	function Words(){
+		this.words = ['function','this','word','return','turn','false','if','else','swich','getElementById','pageY','pageX','for','bind','target','animation','transform','transition','offsetHeight','offsetLeft','setInterval','appendChild','scrollTop','menus','setAttribute','remove','children','sibling','setTimeOut','cloneNode','var','let','left','right','position','relative','absolute','instance','engine','game','move','init','clientX','window','document','bullt','plane','bird','apple','banner','orange','banana','house','father','son','sea','look','konw','noddle','shite','color','vegetables','table','soup','green','blue','keyword','cumputer','production','line','chopcticks','chocolates','cake','cat','pig','animal','food','zoo','baidu','fix','get','red','dog','happy','new','year']
+		this.color = ['#9e8485','#f7072c','#f7ad07','#eeo7fc','#ff0000','#040148','e052ff','#0cf727']
+		this.init = function(){//单词创建
+			this.word = create("div");
+			this.word.className = "active";
+			new GameEngine().box.appendChild(this.word);
+			this.word.innerHTML = this.words[ rand(0,this.words.length-1) ]
+			var ge = new GameEngine();
+			this.word.style.left = rand(0,ge.box.offsetWidth-this.word.offsetWidth)+"px";
+			this.word.style.top = -this.word.offsetTop;
+			this.word.style.color = this.color[ rand(0,this.color.length-1) ];
+			return this;
+		}
+		this.move = function(){
+			this.timer = setInterval(function(){
+				this.word.style.top = this.word.offsetTop +1 + "px";
+				//单词落地
+				if(this.word.offsetTop > new GameEngine().box.offsetHeight-this.word.offsetHeight ){
+					clearInterval(this.timer);
+					this.word.remove();
+					//累加落地词的个数
+					new GameEngine().badNum++;
+					if(new GameEngine().badNum == new GameEngine().num){
+						if(confirm("继续游戏--确定，关闭浏览器--取消")){
+							location.reload();
+						}else{
+							window.close();
+						}
+					}
+				}
+			}.bind(this),new GameEngine().speed)
+		}
+		this.keydown = function(){
+			document.onkeydown = function(e){
+				var e = e || event;
+				var code = e.keyCode || e.which;
+				if( code == 13 ){
+					//判断当前输入的单词和页面上的哪一个单词的内容一致
+					this.judge( new GameEngine().ipt.value )
+					new GameEngine().ipt.value = "";
+				}
+			}.bind(this)
+		};
+		//遍历页面中出现的单词和输入框中的单词是否有一致的  如果有删除该单词，并让积分加1
+		this.judge = function(val){
+			var ws = document.getElementsByClassName("active");
+			for(var i = 0; i < ws.length; i++){
+				if( val == ws[i].innerHTML){
+					ws[i].remove();
+					clearInterval(this.timer);
+					new GameEngine().board.innerHTML = ++new GameEngine().score;
+					
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	  
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</script>
